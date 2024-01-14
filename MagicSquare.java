@@ -1,5 +1,8 @@
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.Scanner;
 
 import javax.sound.midi.Track;
@@ -28,6 +31,11 @@ public class MagicSquare implements MagicSquareInterface {
             }
     }
 
+    /*running the correct matrix*/
+    public MagicSquare(String file, int dimension){
+        createMagicSquare(file);
+    }
+
     /* constructor to make the magic square, have algorithm from the
      * assignment, run the right matrix --> make a private void method 
      * for that. turn 2D array into file
@@ -43,13 +51,10 @@ public class MagicSquare implements MagicSquareInterface {
         int oldcol;
         for(int i = 0; i < Math.pow(n, 2); i++){
             array[row][col] = i;
-
             oldrow = row;
             oldcol = col;
-
             row++;
             col++;
-
             if(row == n){
                 n = 0;
             }
@@ -61,9 +66,7 @@ public class MagicSquare implements MagicSquareInterface {
                 col = oldcol;
                 row--;
             }
-
         }
-
     }
 
 
@@ -88,6 +91,24 @@ public class MagicSquare implements MagicSquareInterface {
                 System.out.print("File Not Found");
             }
             return magicSquare;
+    }
+
+    private void createMatrix(int[][] matrix, String filename){
+        try{
+            File file = new File(filename);
+            PrintWriter pw = new PrintWriter(new FileWriter(file));
+            for (int i = 0; i < dimension; i++){
+                pw.println();
+                for(int j = 0; j < dimension; i++){
+                    String value = String.valueOf(array[i][j]);
+                    pw.print(value);
+                }
+            }
+            pw.close();
+        } catch (IOException e) {
+            System.out.println("IOExeception");
+        }
+
     }
 
 
