@@ -161,9 +161,10 @@ public class MagicSquare implements MagicSquareInterface {
         int[][] anotherArray = new int[dimension][dimension];
         for(int i = 0; i < dimension; i++){
             for(int j = 0; j < dimension; j++){
-                
+                anotherArray[i][j] = array[i][j];
             }
         }
+        return anotherArray;
     }
 
 }
