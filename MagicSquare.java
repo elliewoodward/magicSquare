@@ -49,7 +49,7 @@ public class MagicSquare implements MagicSquareInterface {
         col = n / 2;
         int oldrow;
         int oldcol;
-        for (int i = 0; i <= Math.pow(n, 2); i++) {
+        for (int i = 1; i <= Math.pow(n, 2); i++) {
             array[row][col] = i;
             oldrow = row;
             oldcol = col;
