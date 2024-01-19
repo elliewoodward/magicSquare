@@ -25,14 +25,14 @@ public class MagicSquare implements MagicSquareInterface {
         int[][] magicSquare = readMatrix(file);
         this.array = magicSquare;
 
-        this.magicNumber = (int) ((dimesnions)*(Math.pow((double) dimension, 2.0) + 1)/2);
+        this.magicNumber = (int) ((dimension)*(Math.pow((double) dimension, 2.0) + 1)/2);
 
     }
 
     /* running the correct matrix */
     public MagicSquare(String file, int dimension) {
         createMagicSquare(file);
-        this.magicNumber = (int) ((dimesnions)*(Math.pow((double) dimension, 2.0) + 1)/2);
+        this.magicNumber = (int) ((dimension)*(Math.pow((double) dimension, 2.0) + 1)/2);
     }
 
     /*
