@@ -20,46 +20,38 @@ public class MagicSquare implements MagicSquareInterface {
      * method within the constructor
      */
     public MagicSquare(String file) throws FileNotFoundException {
-        this.fileName = fileName;
+        
         File scanFile = new File(file);
         int[][] magicSquare = readMatrix(file);
         this.array = magicSquare;
-
+        
         this.magicNumber = (int) ((dimension)*(Math.pow((double) dimension, 2.0) + 1)/2);
 
     }
 
     /* running the correct matrix */
-    public MagicSquare(String file, int dimension) {
-        createMagicSquare(file);
+    public MagicSquare(String file, int n) throws IOException {
+        if(n%2 == 1){
+        
         this.magicNumber = (int) ((dimension)*(Math.pow((double) dimension, 2.0) + 1)/2);
-    }
-
-    /*
-     * constructor to make the magic square, have algorithm from the
-     * assignment, run the right matrix --> make a private void method
-     * for that. turn 2D array into file
-     */
-    public void createMagicSquare(String File) {
-        int n = dimension;
-        int[][] array = new int[n][n];
+        this.array = new int[n][n];
         int row;
         int col;
         row = n - 1;
         col = n / 2;
         int oldrow;
         int oldcol;
-        for (int i = 1; i <= Math.pow(n, 2); i++) {
+        for (int i = 1; i <= n*n; i++) {
             array[row][col] = i;
             oldrow = row;
             oldcol = col;
             row++;
             col++;
             if (row == n) {
-                n = 0;
+                row = 0;
             }
             if (col == n) {
-                n = 0;
+                col = 0;
             }
             if (array[row][col] != 0) {
                 row = oldrow;
@@ -67,7 +59,16 @@ public class MagicSquare implements MagicSquareInterface {
                 row--;
             }
         }
+        writeMatrix(array, file);
     }
+    }
+
+    /*
+     * constructor to make the magic square, have algorithm from the
+     * assignment, run the right matrix --> make a private void method
+     * for that. turn 2D array into file
+     */
+    
 
     /*
      * this is the priavte void method that is being created to read
@@ -75,27 +76,37 @@ public class MagicSquare implements MagicSquareInterface {
      */
     private int[][] readMatrix(String file) throws FileNotFoundException {
         File scanFile = new File(file);
-        int[][] magicSquare = new int[dimension][dimension];
+    
         Scanner fileScan = new Scanner(scanFile);
-        while (fileScan.hasNextLine()) {
-            String line = fileScan.nextLine();
-            Scanner lineScan = new Scanner(line);
-            final String DELIMITERS = " ";
-            lineScan.useDelimiter(DELIMITERS);
-        }
+        int n = Integer.parseInt(fileScan.nextLine());
+        this.array = new int[n][n];
+        int row = 0;
+        while(fileScan.hasNextLine()){
+            int col = 0;
+            String newLine = fileScan.nextLine();
+            Scanner lineScanner = new Scanner(newLine);
 
-        return magicSquare;
+            while(lineScanner.hasNext()){
+                array[row][col] = Integer.parseInt(lineScanner.next());
+                col++;
+            }
+            row++;
+        }
+        return array;
     }
 
-    private void createMatrix(int[][] matrix, String filename) throws IOException {
+    private void writeMatrix(int[][] matrix, String filename) throws IOException {
 
+        int dimension = matrix.length;
         File file = new File(filename);
         PrintWriter pw = new PrintWriter(new FileWriter(file));
+        pw.print(dimension);
         for (int i = 0; i < dimension; i++) {
             pw.println();
-            for (int j = 0; j < dimension; i++) {
-                String value = String.valueOf(array[i][j]);
+            for (int j = 0; j < dimension; j++) {
+                int value = array[i][j];
                 pw.print(value);
+                pw.print(" ");
             }
         }
         pw.close();
@@ -105,67 +116,89 @@ public class MagicSquare implements MagicSquareInterface {
     @Override
     public boolean isMagicSquare() {
         this.magicList = true;
+        this.magicNumber = (int) ((dimension)*(Math.pow((double) dimension, 2.0) + 1)/2);
 
-        for (int i = 0; i < dimension; i++) {
-            int count = 0;
+        int n = array.length;
 
-            for (int j = 0; j < dimension; j++) {
-                count += array[i][j];
+        for (int i = 0; i < n; i++) {
+            int test = 0;
+
+            for (int j = 0; j < n; j++) {
+                test += array[i][j];
+
             }
-            if(count != magicNumber){
+            if (test != magicNumber) {
                 magicList = false;
             }
 
-            for (int j = 0; j < dimension; j++) {
-                count += array[j][i];
-            }
-            if(count != magicNumber){
-                magicList = false;
-            }
+        }
+
+        int testRight = 0;
+
+        for (int i = 0; i < n; i++) {
+            testRight += array[i][i];
+
+        }
+        if (testRight != magicNumber) {
+            magicList = false;
+        }
+
+        int testLeft = 0;
+
+        for (int i = n - 1; i >= 0; i--) {
+            testLeft += array[i][i];
+
+        }
+
+        if (testLeft != magicNumber) {
+            magicList = false;
         }
 
         int count = 0;
-        for(int i = 0; i< dimension; i++){
-            count += array[i][i];
+        for (int i = 0; i <= (n * n); i++) {
+            count += i;
         }
-        if(count != magicNumber){
-            magicList = false;
+
+        int counter = 0;
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                counter += array[i][j];
+            }
         }
-        for(int j = 0; j< dimension; j++){
-            count += array[j][j];
-        }
-        if(count != magicNumber){
+
+        if (!(count == counter)) {
             magicList = false;
         }
 
-        count = 0;
-        for(int i = 0; i< dimension; i++){
-            for(int j = 0; j < dimension; j++){
-                count += array[i][j];
+        for (int i = 0; i < n; i++) {
+            for (int j = 1; j < n; j++) {
+                if (array[i][j] == array[i][j - 1]) {
+                    magicList = false;
+                }
             }
-        }
-        
-        int test = 0;
-        for(int i = 0; i < dimension*dimension; i++){
-            test += i;
-        }
-        if(count != test){
-            magicList = false;
         }
 
         return magicList;
+
     }
 
-    @Override
+    // preserves encapsulation by copying the magicsquare into a new array, then
+    // returning that array
     public int[][] getMatrix() {
-        int[][] anotherArray = new int[dimension][dimension];
-        for(int i = 0; i < dimension; i++){
-            for(int j = 0; j < dimension; j++){
-                anotherArray[i][j] = array[i][j];
+        int dimension = array.length;
+        int[][] returnMatrix = new int[dimension][dimension];
+        for (int i = 0; i < dimension; i++) {
+            for (int j = 0; j < dimension; j++) {
+                returnMatrix[i][j] = array[i][j];
             }
+
         }
-        return anotherArray;
+
+        return returnMatrix;
     }
+
+    
+  
 
     @Override
     public String toString(){
